@@ -7,7 +7,7 @@
 
 			<TodoTabs />
 
-			<span class="none" v-if="!notes.length">У вас еще нет заметок.</span>
+			<span class="none" v-if="!notes.length">{{ text }}</span>
 
 			<ul class="todo__list">
 				<TodoNote v-for="note in notes" :key="note.id" :note="note" />
@@ -27,6 +27,18 @@ export default {
 	computed: {
 		notes() {
 			return this.$store.getters.notes;
+		},
+
+		text() {
+			const filter = this.$store.state.filter;
+			let message = 'У вас еще нет заметок';
+			if (filter === 'completed') {
+				message = 'Ничего еще не выполнено, пора бы начать';
+			} else if (filter === 'current') {
+				return 'Отлично! Все выполнено';
+			}
+
+			return message;
 		},
 	},
 	created() {
