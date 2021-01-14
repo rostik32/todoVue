@@ -3,6 +3,7 @@
 		<button
 			class="todo__tab todo__tab--all"
 			:class="{ active: filter === 'all' }"
+			:disabled="!notesLength"
 			@click="filterNotes('all')"
 			@keydown.enter="filterNotes('all')"
 		>
@@ -11,6 +12,7 @@
 		<button
 			class="todo__tab todo__tab--completed"
 			:class="{ active: filter === 'completed' }"
+			:disabled="!notesLength"
 			@click="filterNotes('completed')"
 			@keydown.enter="filterNotes('completed')"
 		>
@@ -19,6 +21,7 @@
 		<button
 			class="todo__tab todo__tab--current"
 			:class="{ active: filter === 'current' }"
+			:disabled="!notesLength"
 			@click="filterNotes('current')"
 			@keydown.enter="filterNotes('current')"
 		>
@@ -34,6 +37,10 @@ export default {
 		filter() {
 			return this.$store.state.filter;
 		},
+
+		notesLength() {
+			return this.$store.state.notes.length;
+		},
 	},
 	methods: {
 		filterNotes(filter) {
@@ -44,33 +51,48 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.todo__tabs {
+	@media (max-width: 576px) {
+		flex-shrink: 0;
+		margin: 0 auto;
+	}
+}
+
 .todo__tab {
 	border: none;
-	padding: 5px;
-	margin: 5px 5px 5px;
-	background-color: rgb(243, 243, 243);
+	background: none;
+	color: hsl(236, 9%, 61%);
+	font-weight: 700;
 	cursor: pointer;
 
-	&:focus {
+	&.active {
+		color: hsl(220, 98%, 61%);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+	}
+
+	&:focus,
+	&:hover {
 		outline: none;
+		color: hsl(235, 19%, 35%);
+	}
+}
+
+.dark .todo__tab {
+	color: hsl(233, 14%, 35%);
+
+	&:hover {
+		color: hsl(236, 33%, 92%);
 	}
 
-	&--all:hover,
-	&--all:focus,
-	&--all.active {
-		background-color: rgb(203, 211, 255);
+	&.active {
+		color: hsl(220, 98%, 61%);
 	}
 
-	&--completed:hover,
-	&--completed:focus,
-	&--completed.active {
-		background-color: rgb(203, 255, 207);
-	}
-
-	&--current:hover,
-	&--current:focus,
-	&--current.active {
-		background-color: rgb(255, 240, 198);
+	&:disabled {
+		color: hsl(233, 14%, 35%);
 	}
 }
 </style>

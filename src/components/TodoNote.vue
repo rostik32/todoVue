@@ -1,25 +1,24 @@
 <template>
-	<li class="todo__note">
-		<div class="todo__note-info">
-			<input
-				ref="checkboxComplete"
-				class="todo__checkbox"
-				type="checkbox"
-				:id="note.id"
-				:checked="note.completed"
-				@change="isCompleted()"
-			/>
+	<li class="todo__row todo__note">
+		<input
+			ref="checkboxComplete"
+			class="todo__checkbox"
+			type="checkbox"
+			:id="note.id"
+			:checked="note.completed"
+			@change="isCompleted($event)"
+		/>
 
-			<label
-				class="todo__label"
-				:for="note.id"
-				tabindex="0"
-				@keydown.enter="labelEnter()"
-			></label>
-			<span class="todo__text">{{ note.text }}</span>
-		</div>
+		<label
+			class="todo__label"
+			:for="note.id"
+			tabindex="0"
+			@keydown.enter="labelEnter()"
+			@mouseup="removeFocusOnClick($event)"
+		></label>
+		<span class="todo__text">{{ note.text }}</span>
 
-		<button type="button" class="todo__delete" @click="onDelete()">
+		<button type="button" class="todo__delete todo__button" @click="onDelete()">
 			<span class="material-icons"> delete_outline </span>
 		</button>
 	</li>
@@ -49,74 +48,30 @@ export default {
 
 <style lang="scss" scoped>
 .todo__note {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0 0 0 20px;
-	border-bottom: 1px solid #000;
+	border-bottom: 1px solid hsl(236, 33%, 92%);
+}
 
-	&:hover {
-		background-color: rgb(245, 245, 245);
-	}
+.todo__text {
+	line-height: 1.3rem;
+	word-break: break-all;
+	margin-right: 15px;
+	flex-grow: 1;
+	color: hsl(235, 19%, 35%);
+}
 
-	&-info {
-		display: flex;
-		align-items: center;
+@media (max-width: 576px) {
+	.todo__delete {
+		opacity: 1;
 	}
 }
 
-.todo__label {
-	position: relative;
-	display: inline-block;
-	margin-right: 10px;
-	flex: 1 0 15px;
-	height: 15px;
-	border: 2px solid rgb(110, 110, 110);
-	background-color: #fff;
-	border-radius: 50%;
-	cursor: pointer;
-
-	&:hover,
-	&:focus {
-		outline: none;
-		border-color: rgb(36, 186, 255);
-	}
-}
-
-.todo__checkbox {
-	display: none;
-
-	&:checked + .todo__label::after {
-		content: '';
-		position: absolute;
-		top: -5px;
-		left: -1px;
-		display: inline-block;
-		transform: rotate(-45deg);
-		width: 18px;
-		height: 10px;
-		border-bottom: 4px solid rgb(160, 229, 140);
-		border-left: 4px solid rgb(160, 229, 140);
+.dark {
+	& .todo__note {
+		border-color: hsl(233, 14%, 35%);
 	}
 
-	&:checked ~ .todo__text {
-		text-decoration: line-through;
-		color: #acacac;
-	}
-}
-
-.todo__delete {
-	background: none;
-	border: none;
-	flex: 0 0 50px;
-	height: 50px;
-	color: rgb(226, 226, 226);
-	cursor: pointer;
-
-	&:hover,
-	&:focus {
-		background-color: #f34f4f;
-		color: #202020;
+	& .todo__text {
+		color: hsl(234, 39%, 85%);
 	}
 }
 </style>

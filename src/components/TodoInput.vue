@@ -1,13 +1,34 @@
 <template>
-	<form class="todo__row-input" @submit.prevent="onCreate()">
+	<form class="todo__row todo__row-input" @submit.prevent="onCreate()">
+		<input
+			ref="checkboxComplete"
+			class="todo__checkbox"
+			type="checkbox"
+			id="allCompleted"
+			:checked="isAllNotesCompleted"
+			@click="completeAll()"
+		/>
+
+		<label
+			class="todo__label"
+			for="allCompleted"
+			tabindex="0"
+			@mouseup="removeFocusOnClick($event)"
+		></label>
+
 		<input
 			type="text"
 			class="todo__input"
-			placeholder="Введите текст заметки"
+			placeholder="Создайте новую задачу..."
 			v-model="note"
 		/>
-		<button type="submit" class="todo__create">
-			<span class="material-icons"> add_task </span>
+
+		<button
+			type="submit"
+			class="todo__create todo__button"
+			@mouseup="removeFocusOnClick($event)"
+		>
+			<span class="material-icons icon-create"> done </span>
 		</button>
 	</form>
 </template>
@@ -18,9 +39,14 @@ export default {
 	data: () => ({
 		note: null,
 	}),
+	computed: {
+		isAllNotesCompleted() {
+			return this.$store.getters.isAllNotesCompleted;
+		},
+	},
 	methods: {
 		onCreate() {
-			if (this.note) {
+			if (this.note && this.note.trim()) {
 				const note = {
 					text: this.note,
 					completed: false,
@@ -28,8 +54,20 @@ export default {
 				};
 
 				this.$store.dispatch('createNote', note);
-				this.note = '';
 			}
+
+			this.note = '';
+		},
+
+		completeAll() {
+			const allCompleted = this.$store.getters.isAllNotesCompleted;
+
+			if (allCompleted) {
+				this.$store.dispatch('incompleteAll');
+				return;
+			}
+
+			this.$store.dispatch('completeAll');
 		},
 	},
 };
@@ -37,28 +75,24 @@ export default {
 
 <style lang="scss" scoped>
 .todo__row-input {
-	display: flex;
-	border-bottom: 1px solid rgb(0, 0, 0);
+	margin-bottom: 15px;
+	border-radius: 5px;
 }
 
 .todo__input {
 	flex-grow: 1;
+	min-width: 0;
 	border: none;
 	outline: none;
-	font-size: 1.5rem;
-	padding: 0 20px;
+	background: none;
+	letter-spacing: 0.05rem;
+
+	&::placeholder {
+		color: hsl(236, 9%, 61%);
+	}
 }
 
-.todo__create {
-	flex-basis: 50px;
-	height: 50px;
-	padding: 0;
-	border: none;
-	font-size: 2rem;
-	cursor: pointer;
-
-	&:hover {
-		background-color: rgb(199, 255, 202);
-	}
+.dark .todo__input {
+	color: hsl(234, 39%, 85%);
 }
 </style>
